@@ -3,7 +3,6 @@ set -e
 
 echo "Bootstrapping iOS app…"
 
-# Install xcodegen if missing
 if ! command -v xcodegen &> /dev/null; then
     brew install xcodegen
 fi
@@ -11,12 +10,8 @@ fi
 mkdir -p SignerApp
 cd SignerApp
 
-# Create project.yml
 cat > project.yml << 'EOF'
 name: SignerApp
-options:
-  minimumXcodeGenVersion: 2.0.0
-
 targets:
   SignerApp:
     type: application
@@ -30,7 +25,6 @@ targets:
       SWIFT_VERSION: 5.0
 EOF
 
-# Create source files
 mkdir -p Sources
 
 cat > Sources/AppDelegate.swift << 'EOF'
@@ -41,9 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-    ) -> Bool {
-        return true
-    }
+    ) -> Bool { true }
 }
 EOF
 
@@ -53,18 +45,16 @@ import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: ContentView())
-            self.window = window
-            window.makeKeyAndVisible()
-        }
+        guard let windowScene = scene as? UIWindowScene else { return }
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = UIHostingController(rootView: ContentView())
+        self.window = window
+        window.makeKeyAndVisible()
     }
 }
 EOF
@@ -80,7 +70,5 @@ struct ContentView: View {
 }
 EOF
 
-echo "Generating Xcode project…"
 xcodegen generate
-
-echo "iOS app created successfully."
+echo "iOS app created."
