@@ -124,4 +124,277 @@
     .ipa-meta {
       display: flex;
       flex-direction: column;
-      gap
+      gap: 2px;
+    }
+    .ipa-name {
+      font-size: 14px;
+    }
+    .ipa-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+    }
+    .tag-accent {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .tag-danger {
+      color: var(--danger);
+      background: rgba(255, 79, 106, 0.15);
+    }
+    .ipa-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #05060a;
+      box-shadow: 0 8px 20px rgba(79, 140, 255, 0.45);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(79, 140, 255, 0.6);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .status-text {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .status-ok {
+      color: #3ddc84;
+    }
+    .status-fail {
+      color: var(--danger);
+    }
+    .side-card-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .side-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .side-label {
+      color: var(--muted);
+    }
+    .side-value {
+      color: var(--text);
+    }
+    footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="logo">
+        <div class="logo-cube"></div>
+        <div>
+          <div class="logo-title">SignerHub</div>
+          <div class="logo-sub">SideStore‑style IPA signer</div>
+        </div>
+      </div>
+      <div class="pill">
+        <span class="pill-dot"></span>
+        <span>CI: healthy · auto‑repair enabled</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- Left: IPA list -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Signed IPAs</div>
+            <div class="card-sub">Tap to install via SideStore / Feather / Arksigning</div>
+          </div>
+          <button class="btn btn-ghost" onclick="triggerBuild()">
+            🔁 Rebuild & sign
+          </button>
+        </div>
+
+        <div class="ipa-list" id="ipa-list">
+          <!-- Example item: zsign base IPA -->
+          <div class="ipa-item">
+            <div class="ipa-meta">
+              <div class="ipa-name">Geometry Dash – Signed (zsign)</div>
+              <div class="ipa-tags">
+                <span class="tag tag-accent">zsign</span>
+                <span class="tag">Feather‑ready</span>
+                <span class="tag">Arksigning‑ready</span>
+              </div>
+            </div>
+            <div class="ipa-actions">
+              <button class="btn btn-primary" onclick="download('/build/ipa/signer-app-zsign.ipa')">
+                ⬇️ Download IPA
+              </button>
+              <div class="status-text status-ok">Last build: OK · 2 min ago</div>
+            </div>
+          </div>
+
+          <!-- Example item: Feather -->
+          <div class="ipa-item">
+            <div class="ipa-meta">
+              <div class="ipa-name">Geometry Dash – Feather e‑sign</div>
+              <div class="ipa-tags">
+                <span class="tag tag-accent">Feather</span>
+                <span class="tag">Imported</span>
+              </div>
+            </div>
+            <div class="ipa-actions">
+              <button class="btn btn-primary" onclick="download('/feather_output/signer-app-feather.ipa')">
+                ⬇️ Download IPA
+              </button>
+              <div class="status-text status-ok">Synced with Feather</div>
+            </div>
+          </div>
+
+          <!-- Example item: Arksigning -->
+          <div class="ipa-item">
+            <div class="ipa-meta">
+              <div class="ipa-name">Geometry Dash – Arksigned</div>
+              <div class="ipa-tags">
+                <span class="tag tag-accent">Arksigning</span>
+                <span class="tag">Alt cert</span>
+              </div>
+            </div>
+            <div class="ipa-actions">
+              <button class="btn btn-primary" onclick="download('/arksigning_output/signer-app-arksigned.ipa')">
+                ⬇️ Download IPA
+              </button>
+              <div class="status-text status-ok">Arksigning pipeline active</div>
+            </div>
+          </div>
+
+          <!-- Example item: SideStore -->
+          <div class="ipa-item">
+            <div class="ipa-meta">
+              <div class="ipa-name">Geometry Dash – SideStore build</div>
+              <div class="ipa-tags">
+                <span class="tag tag-accent">SideStore</span>
+                <span class="tag">Direct install</span>
+              </div>
+            </div>
+            <div class="ipa-actions">
+              <button class="btn btn-primary" onclick="download('/sidestore_output/signer-app-sidestore.ipa')">
+                ⬇️ Download IPA
+              </button>
+              <div class="status-text status-ok">SideStore endpoint synced</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: status + controls -->
+      <aside class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Pipeline status</div>
+            <div class="card-sub">Auto‑repair · auto‑sign · auto‑upload</div>
+          </div>
+        </div>
+
+        <div class="side-card-section">
+          <div class="side-row">
+            <span class="side-label">Last CI run</span>
+            <span class="side-value">2 min ago · success ✅</span>
+          </div>
+          <div class="side-row">
+            <span class="side-label">Auto‑repair</span>
+            <span class="side-value">Enabled (10‑min schedule)</span>
+          </div>
+          <div class="side-row">
+            <span class="side-label">Signer workflow</span>
+            <span class="side-value">Regenerates on failure</span>
+          </div>
+          <div class="side-row">
+            <span class="side-label">Versioning</span>
+            <span class="side-value">Build auto‑increment</span>
+          </div>
+          <div class="side-row">
+            <span class="side-label">Upload targets</span>
+            <span class="side-value">Feather · Arksigning · SideStore</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn btn-primary" onclick="triggerBuild()">
+            🚀 Trigger CI build & sign
+          </button>
+          <button class="btn btn-ghost" onclick="window.location.reload()">
+            🔄 Refresh status
+          </button>
+          <div class="status-text">
+            CI trigger can be wired to a GitHub Actions
+            <code>workflow_dispatch</code> endpoint or a small backend.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span>Made for Geometry Dash mod signing · Jeremiah’s signer stack</span>
+      <span>Powered by GitHub Actions · zsign · Swift signer · Feather · Arksigning · SideStore</span>
+    </footer>
+  </div>
+
+  <script>
+    function download(path) {
+      window.location.href = path;
+    }
+
+    function triggerBuild() {
+      alert("Hook this button to your GitHub Actions workflow_dispatch or a small API that calls it.");
+      // Example idea:
+      // fetch('/api/trigger-build', { method: 'POST' })
+    }
+  </script>
+</body>
+</html>
