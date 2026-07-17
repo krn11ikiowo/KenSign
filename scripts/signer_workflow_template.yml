@@ -1,0 +1,118 @@
+name: Build and Sign iOS IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-sign:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    env:
+      PROJECT_PATH: SignerApp.xcodeproj
+      SCHEME: SignerApp
+      CONFIG: Release
+      IPA_OUTPUT_DIR: build/ipa
+      IPA_NAME: signer-app.ipa
+      EXPORT_OPTIONS_PLIST: ExportOptions.plist
+      SWIFT_SIGNER_SCRIPT: swift_signer/swift_signer.swift
+
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      BUNDLE_ID: com.jeremiah.signerapp
+      SIGNING_CERT_P12_BASE64: ${{ secrets.SIGNING_CERT_P12_BASE64 }}
+      SIGNING_CERT_PASSWORD: ${{ secrets.SIGNING_CERT_PASSWORD }}
+      MOBILEPROVISION_BASE64: ${{ secrets.MOBILEPROVISION_BASE64 }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install zsign || true
+
+      - name: Decode signing assets
+        run: |
+          mkdir -p signing
+          echo "$SIGNING_CERT_P12_BASE64" | base64 --decode > signing/cert.p12
+          echo "$MOBILEPROVISION_BASE64" | base64 --decode > signing/profile.mobileprovision
+
+      - name: Import signing certificate
+        run: |
+          security create-keychain -p "github-actions" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "github-actions" build.keychain
+          security import signing/cert.p12 -k build.keychain -P "$SIGNING_CERT_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "github-actions" build.keychain
+
+      - name: Build archive
+        run: |
+          xcodebuild \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME" \
+            -configuration "$CONFIG" \
+            -archivePath build/SignerApp.xcarchive \
+            archive \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID" \
+            | tee build/logs/build.log
+
+      - name: Export unsigned IPA
+        run: |
+          mkdir -p "$IPA_OUTPUT_DIR"
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/SignerApp.xcarchive \
+            -exportPath "$IPA_OUTPUT_DIR" \
+            -exportOptionsPlist "$EXPORT_OPTIONS_PLIST"
+          mv "$IPA_OUTPUT_DIR"/*.ipa "$IPA_OUTPUT_DIR/$IPA_NAME"
+
+      - name: Run Swift signer pre-processing
+        run: |
+          swift "$SWIFT_SIGNER_SCRIPT" \
+            "$IPA_OUTPUT_DIR/$IPA_NAME" \
+            signing/profile.mobileprovision \
+            signing/cert.p12 \
+            "$SIGNING_CERT_PASSWORD"
+
+      - name: Sign IPA with zsign
+        run: |
+          zsign \
+            -k signing/cert.p12 \
+            -p "$SIGNING_CERT_PASSWORD" \
+            -m signing/profile.mobileprovision \
+            -o "$IPA_OUTPUT_DIR/signer-app-zsign.ipa" \
+            "$IPA_OUTPUT_DIR/$IPA_NAME"
+
+      - name: Prepare Feather output
+        run: |
+          mkdir -p feather_output
+          cp "$IPA_OUTPUT_DIR/signer-app-zsign.ipa" feather_output/signer-app-feather.ipa
+
+      - name: Prepare Arksigning output
+        run: |
+          mkdir -p arksigning_output
+          cp "$IPA_OUTPUT_DIR/signer-app-zsign.ipa" arksigning_output/signer-app-arksigned.ipa
+
+      - name: Prepare SideStore output
+        run: |
+          mkdir -p sidestore_output
+          cp "$IPA_OUTPUT_DIR/signer-app-zsign.ipa" sidestore_output/signer-app-sidestore.ipa
+
+      - name: Auto-increment version
+        run: bash scripts/increment_version.sh
+
+      - name: Upload signed IPAs
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-ipas
+          path: |
+            build/ipa/signer-app-zsign.ipa
+            feather_output/signer-app-feather.ipa
+            arksigning_output/signer-app-arksigned.ipa
+            sidestore_output/signer-app-sidestore.ipa
+
+      - name: Upload to external services
+        run: bash scripts/upload_signed_ipas.sh
