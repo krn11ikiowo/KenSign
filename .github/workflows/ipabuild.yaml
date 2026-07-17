@@ -15,3 +15,5 @@ jobs:
       - run: bash scripts/build_ipa.sh
       - run: bash scripts/increment_version.sh
       - run: bash scripts/upload_signed_ipas.sh
+      - name: Commit Xcode source files
+        run: bash scripts/commit_xcode_sources.sh
