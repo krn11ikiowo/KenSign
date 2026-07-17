@@ -1,6 +1,8 @@
 name: Build and Sign iOS IPA
 
 on:
+  workflow_run:
+
   workflow_dispatch:
 
 jobs:
