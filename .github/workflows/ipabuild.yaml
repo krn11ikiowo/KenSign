@@ -15,14 +15,15 @@ jobs:
     
       - uses: actions/checkout@v4
       - run: brew trust aws/tap
-      - name: Generate Xcode project
-        run: bash scripts/bootstrap_ios_app.sh
+        name: Generate Xcode project
+      - name: Commit Xcode source files
+        run: bash scripts/commit_xcode_sources.sh
+      - run: bash scripts/bootstrap_ios_app.sh
       - run: brew install zsign
       - run: bash scripts/build_ipa.sh
       - run: bash scripts/increment_version.sh
       - run: bash scripts/upload_signed_ipas.sh
-      - name: Commit Xcode source files
-        run: bash scripts/commit_xcode_sources.sh
+      
      
 
       
