@@ -1,6 +1,8 @@
 name: Auto Repair Workflows
 
 on:
+  push:
+    
   schedule:
     - cron: "*/10 * * * *"
   workflow_run:
