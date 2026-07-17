@@ -14,9 +14,9 @@ jobs:
 
     
       - uses: actions/checkout@v4
+      - run: brew trust aws/tap
       - name: Generate Xcode project
         run: bash scripts/bootstrap_ios_app.sh
-      - run: brew trust aws/tap
       - run: brew install zsign
       - run: bash scripts/build_ipa.sh
       - run: bash scripts/increment_version.sh
