@@ -19,4 +19,7 @@ jobs:
       - run: bash scripts/upload_signed_ipas.sh
       - name: Commit Xcode source files
         run: bash scripts/commit_xcode_sources.sh
+      - name: Generate Xcode project
+        run: bash scripts/bootstrap_ios_app.sh
+
       
