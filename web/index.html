@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SignerHub – SideStore Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #05060a;
+      --card: #11141c;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.2);
+      --text: #f5f7ff;
+      --muted: #8b92a7;
+      --danger: #ff4f6a;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #151a26 0, #05060a 55%);
+      color: var(--text);
+    }
+    .shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 16px 48px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-cube {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: conic-gradient(from 180deg, #4f8cff, #7b5cff, #ff4f6a, #4f8cff);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-cube::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 8px;
+      background: #05060a;
+    }
+    .logo-title {
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .logo-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #3ddc84;
+    }
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 20px;
+    }
+    @media (max-width: 800px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: linear-gradient(145deg, #0b0f18, #05060a);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      padding: 18px 18px 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .card-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ipa-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .ipa-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .ipa-meta {
+      display: flex;
+      flex-direction: column;
+      gap
