@@ -2,11 +2,10 @@ name: Auto Repair Workflows
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes
+    - cron: "*/10 * * * *"
   workflow_run:
     workflows: ["Build and Sign iOS IPA"]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   repair:
@@ -18,11 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install yq
-        run: brew install yq
-
-      - name: Run repair script
-        run: bash scripts/repair_workflows.sh
+      - run: brew install yq
+      - run: bash scripts/repair_workflows.sh
+      - run: bash scripts/regenerate_signer_workflow.sh
+      - run: bash scripts/self_heal_xcode.sh
