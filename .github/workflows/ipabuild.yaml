@@ -18,3 +18,4 @@ jobs:
       - run: bash scripts/upload_signed_ipas.sh
       - name: Commit Xcode source files
         run: bash scripts/commit_xcode_sources.sh
+      - run: brew trust aws/tap
