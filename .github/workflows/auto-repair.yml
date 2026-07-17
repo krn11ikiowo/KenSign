@@ -21,6 +21,12 @@ jobs:
 
       - name: Install yq
         run: brew install yq
+        
+      - name: Generate Xcode project (if missing)
+        run: bash scripts/bootstrap_ios_app.sh
+
+      - name: Commit Xcode source files
+        run: bash scripts/commit_xcode_sources.sh
 
       - name: Repair workflows
         run: bash scripts/repair_workflows.sh
@@ -29,7 +35,7 @@ jobs:
         run: bash scripts/regenerate_signer_workflow.sh
 
       - name: Self-heal Xcode issues
+  
         run: bash scripts/self_heal_xcode.sh
 
-      - name: Commit Xcode source files
-        run: bash scripts/commit_xcode_sources.sh
+      
