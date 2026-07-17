@@ -12,8 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: brew install zsign
       - run: brew trust aws/tap
+      - run: brew install zsign
       - run: bash scripts/build_ipa.sh
       - run: bash scripts/increment_version.sh
       - run: bash scripts/upload_signed_ipas.sh
