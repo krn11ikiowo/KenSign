@@ -13,9 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: brew install zsign
+      - run: brew trust aws/tap
       - run: bash scripts/build_ipa.sh
       - run: bash scripts/increment_version.sh
       - run: bash scripts/upload_signed_ipas.sh
       - name: Commit Xcode source files
         run: bash scripts/commit_xcode_sources.sh
-      - run: brew trust aws/tap
+      
