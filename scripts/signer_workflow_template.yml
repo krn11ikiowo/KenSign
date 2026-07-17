@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
-      @main: write
+      main: write
 
     env:
       PROJECT_PATH: SignerApp.xcodeproj
