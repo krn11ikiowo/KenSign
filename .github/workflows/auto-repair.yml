@@ -11,21 +11,25 @@ jobs:
   repair:
     if: ${{ github.event.workflow_run.conclusion == 'failure' || github.event_name == 'schedule' }}
     runs-on: macos-latest
+
     permissions:
-    
       contents: write
-      pull-requests: write
       actions: write
-      code-quality: write
-      checks: write
-      
-     
 
     steps:
       - uses: actions/checkout@v4
-      - run: brew install yq
-      - run: bash scripts/repair_workflows.sh
-      - run: bash scripts/regenerate_signer_workflow.sh
-      - run: bash scripts/self_heal_xcode.sh
-      - run: bash scripts/commit_xcode_sources.sh
- 
+
+      - name: Install yq
+        run: brew install yq
+
+      - name: Repair workflows
+        run: bash scripts/repair_workflows.sh
+
+      - name: Regenerate signer workflow
+        run: bash scripts/regenerate_signer_workflow.sh
+
+      - name: Self-heal Xcode issues
+        run: bash scripts/self_heal_xcode.sh
+
+      - name: Commit Xcode source files
+        run: bash scripts/commit_xcode_sources.sh
